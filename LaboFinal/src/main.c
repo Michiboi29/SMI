@@ -85,7 +85,7 @@ int main(void)
   while (1)
   {
 	i++;
-	valTemp = readADC();
+	valTemp = readADC(); // val de 16 bits (/4095) et va de 0V a ~3V (Vref)
 	val = valTemp;
   }
 }
