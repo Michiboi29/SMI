@@ -7,9 +7,10 @@
 
 #ifndef PWM_H_
 #define PWM_H_
+#include "stm32f4xx.h"
+#include "macros_utiles.h"
 
 float ARR;
-//float dutycycle;
 void configureTIM2(float p_frequence);
 void changePWM(float p_dutyclye);
 void configureGPIOLED();

@@ -4,8 +4,6 @@
  *  Created on: 11 déc. 2021
  *      Author: eti52
  */
-#include "stm32f4xx.h"
-#include "macros_utiles.h"
 #include "pwm.h"
 
 void configureTIM2(float p_frequence){

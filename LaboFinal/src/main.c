@@ -59,6 +59,8 @@ void TIM2_IRQHandler (void){
 int main(void)
 {
   int i = 0;
+  volatile uint16_t val;
+  volatile uint16_t valTemp;
 
   /**
   *  IMPORTANT NOTE!
@@ -75,11 +77,15 @@ int main(void)
   configureGPIOLED();
   configureGPIOADC();
   configureTIM2(2000);
+  configureADC();
+  configureChannelADC();
 
 
   /* Infinite loop */
   while (1)
   {
 	i++;
+	valTemp = readADC();
+	val = valTemp;
   }
 }
