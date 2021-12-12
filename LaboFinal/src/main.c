@@ -31,6 +31,7 @@ SOFTWARE.
 #include "stm32f4xx.h"
 #include "macros_utiles.h"
 #include "pwm.h"
+#include "adc.h"
 
 /* Private macro */
 /* Private variables */
@@ -72,6 +73,7 @@ int main(void)
   /* TODO - Add your application code here */
 
   configureGPIOLED();
+  configureGPIOADC();
   configureTIM2(2000);
 
 
