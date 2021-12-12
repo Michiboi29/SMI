@@ -29,11 +29,24 @@ SOFTWARE.
 
 /* Includes */
 #include "stm32f4xx.h"
+#include "macros_utiles.h"
+#include "pwm.h"
 
 /* Private macro */
 /* Private variables */
+volatile float dutyCycle = 0.90;
 /* Private function prototypes */
 /* Private functions */
+
+void TIM2_IRQHandler (void){
+	  TIM2->SR &= ~BIT0; // update interupt flag to 0
+	  TIM2->SR &= ~BIT1; // compare/capture interrupt flag to 0
+	  GPIOD->ODR ^= BIT15; // switch to on/off
+
+//	  changePWM(dutyCycle);
+//	  if (dutyCycle >= 1) dutyCycle = 0;
+//	  dutyCycle = dutyCycle + 0.1/2;
+  }
 
 /**
 **===========================================================================
@@ -57,6 +70,10 @@ int main(void)
   */
 
   /* TODO - Add your application code here */
+
+  configureGPIOLED();
+  configureTIM2(2000);
+
 
   /* Infinite loop */
   while (1)
