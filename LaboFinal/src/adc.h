@@ -13,7 +13,8 @@
 
 void configureADC();
 void configureGPIOADC();
-void configureChannelADC();
-uint16_t readADC();
+void configureChannel0ADC();
+void configureChannel1ADC();
+uint16_t readADC(uint8_t channel);
 
 #endif /* ADC_H_ */

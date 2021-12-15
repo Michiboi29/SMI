@@ -42,15 +42,28 @@ void configureGPIOADC(){
 	GPIOA->OSPEEDR &= ~BIT1;
 }
 
-void configureChannelADC(){
+void configureChannel0ADC(){
 	ADC1->SMPR2 |= BIT0;			// sets channel 0 sampling time == 15 cycles
 	ADC1->SMPR2 &= ~(BIT1 | BIT2);
 
 	ADC1->SQR3 &= ~(BIT0 | BIT1 | BIT2 | BIT3 | BIT4); // set sequence of sampling for channel0 (is the first to be sample)
 }
 
-uint16_t readADC(){
+void configureChannel1ADC(){
+	ADC1->SMPR2 |= BIT3;			// sets channel 1 sampling time == 15 cycles
+	ADC1->SMPR2 &= ~(BIT4 | BIT5);
+
+	ADC1->SQR3 &= ~(BIT5 | BIT6 | BIT7 | BIT8 | BIT9); // set sequence of sampling for channel1 (is the first to be sample)
+}
+
+uint16_t readADC(uint8_t channel){
 	uint32_t timeout = 0xFFF;
+
+	if (channel == 0)
+		configureChannel0ADC();
+	else if (channel == 1)
+		configureChannel1ADC();
+
 
 	/* Start software conversion */
 	ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;

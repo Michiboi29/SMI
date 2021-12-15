@@ -12,7 +12,7 @@
 
 float ARR;
 void configureTIM2(float p_frequence);
-void changePWM(float p_dutyclye);
+void setPWM(float p_dutyclye);
 void configureGPIOLED();
 
 #endif /* PWM_H_ */

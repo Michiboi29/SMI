@@ -32,10 +32,11 @@ SOFTWARE.
 #include "macros_utiles.h"
 #include "pwm.h"
 #include "adc.h"
+#include "dac.h"
 
 /* Private macro */
 /* Private variables */
-volatile float dutyCycle = 0.90;
+volatile float dutyCycle = 0;
 /* Private function prototypes */
 /* Private functions */
 
@@ -61,7 +62,7 @@ int main(void)
   int i = 0;
   volatile uint16_t val;
   volatile uint16_t valTemp;
-
+  volatile float dutyVal;
   /**
   *  IMPORTANT NOTE!
   *  The symbol VECT_TAB_SRAM needs to be defined when building the project
@@ -76,16 +77,23 @@ int main(void)
 
   configureGPIOLED();
   configureGPIOADC();
+  configureGPIODAC();
+
   configureTIM2(2000);
+  setPWM(0);
   configureADC();
-  configureChannelADC();
+  configureDAC();
 
 
   /* Infinite loop */
   while (1)
   {
 	i++;
-	valTemp = readADC(); // val de 16 bits (/4095) et va de 0V a ~3V (Vref)
+	valTemp = readADC(0); // val de 16 bits (/4095) et va de 0V a ~3V (Vref)
 	val = valTemp;
+	dutyVal = (float)val/4095.0;
+	if (val <= 0) dutyVal = 0;
+	writeDAC(val);
+	setPWM(dutyVal);
   }
 }
