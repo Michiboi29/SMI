@@ -64,17 +64,15 @@ uint16_t readADC(uint8_t channel){
 	else if (channel == 1)
 		configureChannel1ADC();
 
+	ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART; // start conversion
 
-	/* Start software conversion */
-	ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
-
-	/* Wait till done */
+	// wait end of conversion
 	while (!(ADC1->SR & ADC_SR_EOC)) {
+		// timout if conversion too long
 		if (timeout-- == 0x00) {
 			return 0;
 		}
 	}
 
-	/* Return result */
 	return ADC1->DR;
 }

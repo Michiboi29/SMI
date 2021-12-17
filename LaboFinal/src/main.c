@@ -33,10 +33,16 @@ SOFTWARE.
 #include "pwm.h"
 #include "adc.h"
 #include "dac.h"
+#include "exti.h"
+#include "timer.h"
 
 /* Private macro */
 /* Private variables */
 volatile float dutyCycle = 0;
+volatile long extiCount = 0;
+volatile long lastExtiCount = 0;
+volatile long timeCount = 0;
+volatile long lastTimeCount = 0;
 /* Private function prototypes */
 /* Private functions */
 
@@ -44,11 +50,29 @@ void TIM2_IRQHandler (void){
 	  TIM2->SR &= ~BIT0; // update interupt flag to 0
 	  TIM2->SR &= ~BIT1; // compare/capture interrupt flag to 0
 	  GPIOD->ODR ^= BIT15; // switch to on/off
-
-//	  changePWM(dutyCycle);
-//	  if (dutyCycle >= 1) dutyCycle = 0;
-//	  dutyCycle = dutyCycle + 0.1/2;
   }
+
+void TIM3_IRQHandler(void)
+{
+	TIM3->SR &= ~BIT0; // update interupt flag to 0
+	timeCount++;
+}
+
+// Handle PB12 interrupt
+void EXTI15_10_IRQHandler(void) {
+	EXTI->PR |= BIT12; // update flag exti
+	GPIOD->ODR ^= BIT13;
+	extiCount++;
+}
+
+double calculateSpeed(){
+	int tickTurn = 12;
+	long diffExti = extiCount - lastExtiCount;
+	double diffSpace = (double)diffExti / tickTurn;
+	long diffTime = timeCount - lastTimeCount;
+	return (double)diffSpace / diffTime;
+}
+
 
 /**
 **===========================================================================
@@ -63,6 +87,8 @@ int main(void)
   volatile uint16_t val;
   volatile uint16_t valTemp;
   volatile float dutyVal;
+  volatile double speedTemp;
+  volatile double speed;
   /**
   *  IMPORTANT NOTE!
   *  The symbol VECT_TAB_SRAM needs to be defined when building the project
@@ -78,12 +104,12 @@ int main(void)
   configureGPIOLED();
   configureGPIOADC();
   configureGPIODAC();
-
-  configureTIM2(2000);
-  setPWM(0);
+  configureGPIOEXTI();
+  configureTIM2(2);
+  configureTIM3(1000);
   configureADC();
   configureDAC();
-
+  configureEXTI();
 
   /* Infinite loop */
   while (1)
@@ -95,5 +121,8 @@ int main(void)
 	if (val <= 0) dutyVal = 0;
 	writeDAC(val);
 	setPWM(dutyVal);
+
+	speedTemp = calculateSpeed();
+	speed = speedTemp;
   }
 }

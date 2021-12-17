@@ -8,7 +8,7 @@
 
 void configureTIM4(){
 
-  RCC_APB2ENR |= BIT2; // donne horloge au peripherique TIM4
+  RCC->APB2ENR |= BIT2; // donne horloge au peripherique TIM4
 
   TIM4->CR1 &= ~BIT0; // counter disable
 
@@ -25,8 +25,7 @@ void configureTIM4(){
   TIM4->CCMR1 &= ~(BIT12 | BIT13 | BIT14 | BIT15); //IC2F = ‘0000’
 
   TIM4->SMCR &= ~BIT2;
-  TIM4->SMCR |= (BIT0 | BIT1); // both inputs are active on both rising and falling
-  edges
+  TIM4->SMCR |= (BIT0 | BIT1); // both inputs are active on both rising and falling edges
 
   NVIC->ISER[0] |= BIT30; // activate TIM2 in NVIC pour quil puisse traiter les interupt
 
