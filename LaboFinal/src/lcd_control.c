@@ -13,9 +13,8 @@ volatile unsigned int lcdInit = 0;
 void configureLcdGPIO(void)
 {
 
-	// activer clocks des GPIOs B, D et timer 2
+	// activer clocks des GPIOs B, D
 	RCC->AHB1ENR |= BIT1 | BIT3;
-	RCC->APB1ENR |= BIT0;
 
 	// configurer pins instruction LCD output
 	GPIOB->MODER |= BIT6 | BIT8 | BIT10;
@@ -123,11 +122,11 @@ void configureLCD(void)
 	writeLCD(0x50);		// print P
 	writeLCD(0x4D);		// print M
 	writeLCD(0x3A);		// print :
-	instructLCD(0xC0);	// 2nd line
-	writeLCD(0x56);		// print V
-	writeLCD(0x70);		// print p
-	writeLCD(0x74);		// print t
-	writeLCD(0x3A);		// print :
+//	instructLCD(0xC0);	// 2nd line
+//	writeLCD(0x56);		// print V
+//	writeLCD(0x70);		// print p
+//	writeLCD(0x74);		// print t
+//	writeLCD(0x3A);		// print :
 
     lcdInit = 1;
 
@@ -135,19 +134,19 @@ void configureLCD(void)
 
 void writeInfo(float p_value)
 {
-	instructLCD(0x8F);	// set cursor
+	instructLCD(0x8A);	// set cursor
 	instructLCD(0x04);	// set left shift
 	setLcdBusOutput();
 
 	unsigned int firstValue = (int)p_value;
 	unsigned int secondValue = (int)((p_value - firstValue)*100);
 
-	if (secondValue > 10)
+	if (secondValue < 10)
 	{
 		writeLCD(secondValue);
 		writeLCD('0');
 	} else {
-		for(int i = 0; i <= 3;i++)
+		for(int i = 0; i < 2;i++)
 		{ 
 			int value = secondValue % 10;
 			secondValue /= 10;
@@ -158,7 +157,7 @@ void writeInfo(float p_value)
 
 	writeLCD(0x2E);
 
-	for(int i = 0; i <= 3;i++)
+	for(int i = 0; i < 3;i++)
 	{
 		int value = firstValue % 10;
 		firstValue /= 10;

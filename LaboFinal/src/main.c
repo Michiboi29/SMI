@@ -35,6 +35,7 @@ SOFTWARE.
 #include "dac.h"
 #include "exti.h"
 #include "timer.h"
+#include "lcd_control.h"
 
 /* Private macro */
 /* Private variables */
@@ -65,12 +66,15 @@ void EXTI15_10_IRQHandler(void) {
 	extiCount++;
 }
 
-double calculateSpeed(){
+float calculateSpeed(){
 	int tickTurn = 12;
 	long diffExti = extiCount - lastExtiCount;
-	double diffSpace = (double)diffExti / tickTurn;
-	long diffTime = timeCount - lastTimeCount;
-	return (double)diffSpace / diffTime;
+	float diffSpace = (float)diffExti / tickTurn;
+	float diffTime = (float)(timeCount - lastTimeCount)/1000;
+	lastExtiCount = extiCount;
+	lastTimeCount = timeCount;
+	float return_value = diffSpace/diffTime;
+	return return_value;
 }
 
 
@@ -87,8 +91,8 @@ int main(void)
   volatile uint16_t val;
   volatile uint16_t valTemp;
   volatile float dutyVal;
-  volatile double speedTemp;
-  volatile double speed;
+  volatile float speedTemp;
+  volatile float speed;
   /**
   *  IMPORTANT NOTE!
   *  The symbol VECT_TAB_SRAM needs to be defined when building the project
@@ -105,7 +109,9 @@ int main(void)
   configureGPIOADC();
   configureGPIODAC();
   configureGPIOEXTI();
-  configureTIM2(2);
+  configureLcdGPIO();
+  configureLCD();
+  configureTIM2(1567);
   configureTIM3(1000);
   configureADC();
   configureDAC();
@@ -115,6 +121,8 @@ int main(void)
   while (1)
   {
 	i++;
+
+
 	valTemp = readADC(0); // val de 16 bits (/4095) et va de 0V a ~3V (Vref)
 	val = valTemp;
 	dutyVal = (float)val/4095.0;
@@ -122,7 +130,11 @@ int main(void)
 	writeDAC(val);
 	setPWM(dutyVal);
 
-	speedTemp = calculateSpeed();
-	speed = speedTemp;
+	long diffTime_main = timeCount - lastTimeCount;
+	if (diffTime_main > 700){
+		speed = calculateSpeed();
+		//speedTemp = 13.51324;
+		writeInfo(speed);
+	}
   }
 }

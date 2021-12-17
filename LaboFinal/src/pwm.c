@@ -44,7 +44,7 @@ void configureTIM2(float p_frequence){
 void setPWM(float p_dutycycle){
 	//TIM2->CR1 |= BIT0;
 	if (p_dutycycle > 1) p_dutycycle = 1.0;
-	if (p_dutycycle < 0.04) p_dutycycle = 0.04;
+	if (p_dutycycle < 0.08) p_dutycycle = 0.08;
 
 	TIM2->CCR1 = ARR * p_dutycycle; // width of pwm -- sets dutycycle
 }
