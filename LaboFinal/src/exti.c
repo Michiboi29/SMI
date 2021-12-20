@@ -13,8 +13,8 @@ void configureGPIOEXTI(){
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN; //enable clock GPIOB port
 
 	GPIOB->MODER &= ~(BIT24 | BIT25); // Mode input pin12
-	GPIOB->OTYPER &= ~BIT12; // push-pusll pin12
-	GPIOB->PUPDR |= BIT24;  // pull-up pin12
+	GPIOB->OTYPER &= ~BIT12; // push-pull pin12
+	GPIOB->PUPDR |= BIT24;  // pull-up pin 12
 	GPIOB->PUPDR &= ~BIT25;
 
 	GPIOB->OSPEEDR |= (BIT24 | BIT25);	//very high speed pin12

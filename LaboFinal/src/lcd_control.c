@@ -15,6 +15,7 @@ void configureLcdGPIO(void)
 
 	// activer clocks des GPIOs B, D
 	RCC->AHB1ENR |= BIT1 | BIT3;
+	RCC->APB1ENR |= BIT0;
 
 	// configurer pins instruction LCD output
 	GPIOB->MODER |= BIT6 | BIT8 | BIT10;
@@ -117,16 +118,11 @@ void configureLCD(void)
 	}
 
 	instructLCD(0x01);	// Display clear
-	instructLCD(0x0E);	// Display control (0x0C to erase cursor, 0x0E to display cursor)
+	instructLCD(0x0C);	// Display control (0x0C to erase cursor, 0x0E to display cursor)
 	writeLCD(0x52);		// print R
 	writeLCD(0x50);		// print P
 	writeLCD(0x4D);		// print M
 	writeLCD(0x3A);		// print :
-//	instructLCD(0xC0);	// 2nd line
-//	writeLCD(0x56);		// print V
-//	writeLCD(0x70);		// print p
-//	writeLCD(0x74);		// print t
-//	writeLCD(0x3A);		// print :
 
     lcdInit = 1;
 
@@ -134,7 +130,7 @@ void configureLCD(void)
 
 void writeInfo(float p_value)
 {
-	instructLCD(0x8A);	// set cursor
+	instructLCD(0x89);	// set cursor
 	instructLCD(0x04);	// set left shift
 	setLcdBusOutput();
 
@@ -143,7 +139,7 @@ void writeInfo(float p_value)
 
 	if (secondValue < 10)
 	{
-		writeLCD(secondValue);
+		writeLCD(secondValue + '0');
 		writeLCD('0');
 	} else {
 		for(int i = 0; i < 2;i++)
@@ -157,7 +153,7 @@ void writeInfo(float p_value)
 
 	writeLCD(0x2E);
 
-	for(int i = 0; i < 3;i++)
+	for(int i = 0; i < 2;i++)
 	{
 		int value = firstValue % 10;
 		firstValue /= 10;

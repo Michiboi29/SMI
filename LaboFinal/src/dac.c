@@ -11,7 +11,7 @@ void configureGPIODAC(){
 	RCC->AHB1ENR |= BIT0; // Enable GPIOA clock
 
 	GPIOA->MODER |= (BIT8 | BIT9); // Mode Analog pin4
-	GPIOA->OTYPER &= ~BIT4; // push-pusll pin4
+	GPIOA->OTYPER &= ~BIT4; // push-pull pin4
 	GPIOA->PUPDR |= BIT9;  // pull-down pin4
 	GPIOA->PUPDR &= ~BIT8;
 

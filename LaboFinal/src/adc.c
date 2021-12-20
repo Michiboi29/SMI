@@ -68,7 +68,7 @@ uint16_t readADC(uint8_t channel){
 
 	// wait end of conversion
 	while (!(ADC1->SR & ADC_SR_EOC)) {
-		// timout if conversion too long
+		// timeout if conversion too long
 		if (timeout-- == 0x00) {
 			return 0;
 		}

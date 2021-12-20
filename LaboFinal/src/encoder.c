@@ -6,7 +6,7 @@
  */
 #include "encoder.h"
 
-void configureTIM4(){
+void configureTIM1(){
 
   RCC->APB2ENR |= BIT2; // donne horloge au peripherique TIM4
 

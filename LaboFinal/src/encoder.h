@@ -11,7 +11,7 @@
 #include "stm32f4xx.h"
 #include "macros_utiles.h"
 
-void configureTIM1(float p_frequence);
+void configureTIM1();
 
 
 #endif /* ENCODER_H_ */

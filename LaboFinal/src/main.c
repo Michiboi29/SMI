@@ -47,12 +47,6 @@ volatile long lastTimeCount = 0;
 /* Private function prototypes */
 /* Private functions */
 
-void TIM2_IRQHandler (void){
-	  TIM2->SR &= ~BIT0; // update interupt flag to 0
-	  TIM2->SR &= ~BIT1; // compare/capture interrupt flag to 0
-	  GPIOD->ODR ^= BIT15; // switch to on/off
-  }
-
 void TIM3_IRQHandler(void)
 {
 	TIM3->SR &= ~BIT0; // update interupt flag to 0
@@ -89,9 +83,7 @@ int main(void)
 {
   int i = 0;
   volatile uint16_t val;
-  volatile uint16_t valTemp;
   volatile float dutyVal;
-  volatile float speedTemp;
   volatile float speed;
   /**
   *  IMPORTANT NOTE!
@@ -105,9 +97,8 @@ int main(void)
 
   /* TODO - Add your application code here */
 
-  configureGPIOLED();
+  configureGPIOPWM();
   configureGPIOADC();
-  configureGPIODAC();
   configureGPIOEXTI();
   configureLcdGPIO();
   configureLCD();
@@ -123,17 +114,14 @@ int main(void)
 	i++;
 
 
-	valTemp = readADC(0); // val de 16 bits (/4095) et va de 0V a ~3V (Vref)
-	val = valTemp;
+	val = readADC(0); // val de 16 bits (/4095) et va de 0V a ~3V (Vref)
 	dutyVal = (float)val/4095.0;
 	if (val <= 0) dutyVal = 0;
-	writeDAC(val);
 	setPWM(dutyVal);
 
 	long diffTime_main = timeCount - lastTimeCount;
 	if (diffTime_main > 700){
 		speed = calculateSpeed();
-		//speedTemp = 13.51324;
 		writeInfo(speed);
 	}
   }
